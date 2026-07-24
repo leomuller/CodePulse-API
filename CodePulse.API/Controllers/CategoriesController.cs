@@ -22,7 +22,7 @@ namespace CodePulse.API.Controllers
 		//CRUD Functionality
 
 		[HttpPost]
-		public async Task<IActionResult> CreateCategory(Models.DTO.CreateCategoryRequestDto request)
+		public async Task<IActionResult> CreateCategory([FromBody] Models.DTO.CreateCategoryRequestDto request)
 		{
 			var category = new Models.Domain.Category
 			{
@@ -51,13 +51,13 @@ namespace CodePulse.API.Controllers
 
 			//map domain model to dto
 			var response = new List<CategoryDto>();
-			foreach(var category in categories)
+			foreach (var category in categories)
 			{
 				response.Add(new CategoryDto
 				{
 					Id = category.Id,
 					Name = category.Name,
-					UrlHandle = category.UrlHandle	
+					UrlHandle = category.UrlHandle
 				});
 			}
 
@@ -68,13 +68,14 @@ namespace CodePulse.API.Controllers
 			//	UrlHandle = category.UrlHandle
 			//});
 			return Ok(response);
-		} 
+		}
 
 
-		[HttpGet("{id:guid}")]	
-		public async Task<IActionResult> GetCategory(Guid id)
+		[HttpGet]
+		[Route("{id:guid}")]
+		public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
 		{
-			var category = await _categoryRespository.GetAsync(id);
+			var category = await _categoryRespository.GetByIdAsync(id);
 
 			if (category == null)
 			{
@@ -89,29 +90,37 @@ namespace CodePulse.API.Controllers
 			};
 
 			return Ok(response);
-		} 
-		
+		}
+
 		[HttpPut]
-		public async Task<IActionResult> UpdateCategory(Models.DTO.UpdateCategoryRequestDto request)
+		[Route("{id:guid}")]
+		public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] Models.DTO.UpdateCategoryRequestDto request)
 		{
 			var category = new Models.Domain.Category
 			{
-				Id = request.Id,
+				Id = id,
 				Name = request.Name,
 				UrlHandle = request.UrlHandle
 			};
-			await _categoryRespository.UpdateAsync(category);
+
+			var updatedCategory = await _categoryRespository.UpdateAsync(category);
+
+			if(updatedCategory == null)
+			{
+				return NotFound();
+			}
+
 			var response = new Models.DTO.CategoryDto
 			{
-				Id = category.Id,
-				Name = category.Name,
-				UrlHandle = category.UrlHandle
+				Id = updatedCategory.Id,
+				Name = updatedCategory.Name,
+				UrlHandle = updatedCategory.UrlHandle
 			};
 			return Ok(response);
 		}
 
 		[HttpDelete("{id:guid}")] 	
-		public async Task<IActionResult> DeleteCategory(Guid id)
+		public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
 		{
 			var category = await _categoryRespository.DeleteAsync(id);
 			if (category == null)
