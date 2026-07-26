@@ -20,6 +20,7 @@ namespace CodePulse.API.Controllers
 
 
 		//CRUD Functionality
+		// POST - https://localhost:7154/api/categories
 
 		[HttpPost]
 		public async Task<IActionResult> CreateCategory([FromBody] Models.DTO.CreateCategoryRequestDto request)
@@ -44,6 +45,7 @@ namespace CodePulse.API.Controllers
 			return Ok(response);
 		}
 
+		// GET - https://localhost:7154/api/categories
 		[HttpGet]
 		public async Task<IActionResult> GetAllCategories()
 		{
@@ -70,7 +72,7 @@ namespace CodePulse.API.Controllers
 			return Ok(response);
 		}
 
-
+		// GET - https://localhost:7154/api/categories/{id}
 		[HttpGet]
 		[Route("{id:guid}")]
 		public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
@@ -92,6 +94,7 @@ namespace CodePulse.API.Controllers
 			return Ok(response);
 		}
 
+		// PUT - https://localhost:7154/api/categories/{id}
 		[HttpPut]
 		[Route("{id:guid}")]
 		public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] Models.DTO.UpdateCategoryRequestDto request)
@@ -119,10 +122,11 @@ namespace CodePulse.API.Controllers
 			return Ok(response);
 		}
 
+		// DELETE - https://localhost:7154/api/categories/{id}
 		[HttpDelete("{id:guid}")] 	
 		public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
 		{
-			var category = await _categoryRespository.DeleteAsync(id);
+			var category = await _categoryRespository.DeleteByIdAsync(id);
 			if (category == null)
 			{
 				return NotFound();
