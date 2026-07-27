@@ -123,7 +123,8 @@ namespace CodePulse.API.Controllers
 		}
 
 		// DELETE - https://localhost:7154/api/categories/{id}
-		[HttpDelete("{id:guid}")] 	
+		[HttpDelete]
+		[Route("{id:guid}")]
 		public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
 		{
 			var category = await _categoryRespository.DeleteByIdAsync(id);
@@ -132,8 +133,16 @@ namespace CodePulse.API.Controllers
 				return NotFound();
 			}
 
-			// Return 204 No Content for a successful delete
-			return NoContent();
+			//// Return 204 No Content for a successful delete
+			//return NoContent();
+
+			var response = new Models.DTO.CategoryDto
+			{
+				Id = category.Id,
+				Name = category.Name,
+				UrlHandle = category.UrlHandle
+			};
+			return Ok(response);
 		}
 
 

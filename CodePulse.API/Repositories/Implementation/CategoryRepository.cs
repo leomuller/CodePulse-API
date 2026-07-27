@@ -65,7 +65,7 @@ namespace CodePulse.API.Repositories.Implementation
 		//	return existing;
 		//}
 
-		public async Task<Category> DeleteByIdAsync(Guid id)
+		public async Task<Category?> DeleteByIdAsync(Guid id)
 		{
 			var existing = await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id ==	id);
 			if (existing == null)
