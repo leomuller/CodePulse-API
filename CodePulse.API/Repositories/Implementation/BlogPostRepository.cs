@@ -30,7 +30,7 @@ namespace CodePulse.API.Repositories.Implementation
 
 		public async Task<IEnumerable<BlogPost>> GetAllAsync()
 		{
-			throw new NotImplementedException();
+			return await _dbContext.BlogPosts.ToListAsync();
 		}
 
 		public async Task<BlogPost?> GetByIdAsync(Guid id)

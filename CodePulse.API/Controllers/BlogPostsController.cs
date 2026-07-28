@@ -1,4 +1,6 @@
-﻿using CodePulse.API.Repositories.Interface;
+﻿using CodePulse.API.Models.DTO;
+using CodePulse.API.Repositories.Implementation;
+using CodePulse.API.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodePulse.API.Controllers
@@ -50,6 +52,34 @@ namespace CodePulse.API.Controllers
 			};
 
 
+			return Ok(response);
+		}
+
+
+		// GET - https://localhost:7154/api/blogposts
+		[HttpGet]
+		public async Task<IActionResult> GetAllBlogPosts()
+		{
+			var blogposts = await _blogPostRepository.GetAllAsync();
+
+			//map domain model to dto
+			var response = new List<BlogPostDto>();
+			foreach (var blogpost in blogposts)
+			{
+				response.Add(new BlogPostDto
+				{
+					Id = blogpost.Id,
+					Title = blogpost.Title,
+					ShortDescription = blogpost.ShortDescription, 
+					Content = blogpost.Content,
+					FeaturedImageUrl = blogpost.FeaturedImageUrl,
+					UrlHandle = blogpost.UrlHandle,
+					PublishedDate = blogpost.PublishedDate,
+					Author =blogpost.Author,
+					IsVisible = blogpost.IsVisible
+				});
+			}
+			
 			return Ok(response);
 		}
 	}
