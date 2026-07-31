@@ -30,17 +30,31 @@ namespace CodePulse.API.Repositories.Implementation
 
 		public async Task<IEnumerable<BlogPost>> GetAllAsync()
 		{
-			return await _dbContext.BlogPosts.ToListAsync();
+			return await _dbContext.BlogPosts.Include(x => x.Categories).ToListAsync();
 		}
 
 		public async Task<BlogPost?> GetByIdAsync(Guid id)
 		{
-			throw new NotImplementedException();
+			return await _dbContext.BlogPosts.Include(x => x.Categories).FirstOrDefaultAsync(x => x.Id == id);
 		}
 
 		public async Task<BlogPost?> UpdateAsync(BlogPost blogpost)
 		{
-			throw new NotImplementedException();
+			var existing = await _dbContext.BlogPosts.Include(c => c.Categories).FirstOrDefaultAsync(x => x.Id == blogpost.Id);
+
+
+			if (existing == null)
+			{
+				return null;	//doesn't exist
+			}
+
+			// copy/update properties as needed, or use Update() if you replace the whole entity
+			_dbContext.Entry(existing).CurrentValues.SetValues(blogpost);   //update blogpost
+			existing.Categories = blogpost.Categories;	//update categories!
+			await _dbContext.SaveChangesAsync();
+
+
+			return blogpost;
 		}
 	}
 }
