@@ -25,7 +25,17 @@ namespace CodePulse.API.Repositories.Implementation
 
 		public async Task<BlogPost?> DeleteByIdAsync(Guid id)
 		{
-			throw new NotImplementedException();
+			var existing = await _dbContext.BlogPosts.Include(c => c.Categories).FirstOrDefaultAsync(x => x.Id == id);
+			if(existing == null)
+			{
+				return null;    //doesn't exist
+			}
+
+			_dbContext.BlogPosts.Remove(existing);  //this will also remove the relationship with categories due to EF Core's handling of many-to-many relationships
+			await _dbContext.SaveChangesAsync();
+
+			return existing;	//not sure what the point is, but hey.
+
 		}
 
 		public async Task<IEnumerable<BlogPost>> GetAllAsync()
