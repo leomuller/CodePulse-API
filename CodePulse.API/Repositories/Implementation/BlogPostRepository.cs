@@ -25,8 +25,9 @@ namespace CodePulse.API.Repositories.Implementation
 
 		public async Task<BlogPost?> DeleteByIdAsync(Guid id)
 		{
-			var existing = await _dbContext.BlogPosts.Include(c => c.Categories).FirstOrDefaultAsync(x => x.Id == id);
-			if(existing == null)
+			//var existing = await _dbContext.BlogPosts.Include(c => c.Categories).FirstOrDefaultAsync(x => x.Id == id);
+			var existing = await _dbContext.BlogPosts.FirstOrDefaultAsync(x => x.Id == id);
+			if (existing == null)
 			{
 				return null;    //doesn't exist
 			}
