@@ -49,6 +49,11 @@ namespace CodePulse.API.Repositories.Implementation
 			return await _dbContext.BlogPosts.Include(x => x.Categories).FirstOrDefaultAsync(x => x.Id == id);
 		}
 
+		public async Task<BlogPost?> GetByUrlHandleAsync(string urlHandle)
+		{
+			return await _dbContext.BlogPosts.Include(x => x.Categories).FirstOrDefaultAsync(x => x.UrlHandle == urlHandle);
+		}
+
 		public async Task<BlogPost?> UpdateAsync(BlogPost blogpost)
 		{
 			var existing = await _dbContext.BlogPosts.Include(c => c.Categories).FirstOrDefaultAsync(x => x.Id == blogpost.Id);
@@ -67,5 +72,7 @@ namespace CodePulse.API.Repositories.Implementation
 
 			return blogpost;
 		}
+
+	
 	}
 }

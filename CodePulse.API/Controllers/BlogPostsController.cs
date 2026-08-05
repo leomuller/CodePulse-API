@@ -17,6 +17,11 @@ namespace CodePulse.API.Controllers
 		{
 			_blogPostRepository = blogPostRepository;
 			_categoryRepository = categoryRepository;
+
+
+			//testing tuples:
+			//var mytuple = (name: "leo", age: 11, wantmail: true);
+
 		}
 
 
@@ -118,6 +123,42 @@ namespace CodePulse.API.Controllers
 		public async Task<IActionResult> GetBlogPostById([FromRoute] Guid id)
 		{
 			var blogpost = await _blogPostRepository.GetByIdAsync(id);
+
+			if (blogpost == null)
+			{
+				return NotFound();
+			}
+
+			var response = new Models.DTO.BlogPostDto
+			{
+				Id = blogpost.Id,
+				Title = blogpost.Title,
+				ShortDescription = blogpost.ShortDescription,
+				Content = blogpost.Content,
+				FeaturedImageUrl = blogpost.FeaturedImageUrl,
+				UrlHandle = blogpost.UrlHandle,
+				PublishedDate = blogpost.PublishedDate,
+				Author = blogpost.Author,
+				IsVisible = blogpost.IsVisible,
+				Categories = blogpost.Categories.Select(x => new CategoryDto
+				{
+					Id = x.Id,
+					Name = x.Name,
+					UrlHandle = x.UrlHandle
+				}).ToList()
+			};
+
+			return Ok(response);
+		}
+
+
+
+		// GET - https://localhost:7154/api/blogposts/{urlhandle}
+		[HttpGet]
+		[Route("{urlHandle}")]
+		public async Task<IActionResult> GetBlogPostByUrlHandle([FromRoute] string urlHandle)
+		{
+			var blogpost = await _blogPostRepository.GetByUrlHandleAsync(urlHandle);
 
 			if (blogpost == null)
 			{
